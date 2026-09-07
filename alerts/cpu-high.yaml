@@ -1,0 +1,26 @@
+groups:
+  - name: sre-resource-alerts
+    rules:
+
+      - alert: KubernetesHighCPU
+
+        expr: |
+          sum by (pod) (
+            rate(
+              container_cpu_usage_seconds_total{
+                namespace="sre-practice",
+                container!="",
+                container!="POD"
+              }[5m]
+            )
+          ) > 0.4
+
+        for: 2m
+
+        labels:
+          severity: warning
+          team: sre-aiops
+
+        annotations:
+          summary: "High Kubernetes CPU"
+          description: "A pod is consuming more than approximately 0.4 CPU cores."

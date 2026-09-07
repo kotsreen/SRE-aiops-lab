@@ -1,0 +1,21 @@
+groups:
+  - name: sre-kubernetes-crash-errors
+    rules:
+
+      - alert: KubernetesCrashLoopBackOff
+
+        expr: |
+          kube_pod_container_status_waiting_reason{
+            namespace="sre-practice",
+            reason="CrashLoopBackOff"
+          } > 0
+
+        for: 30s
+
+        labels:
+          severity: critical
+          team: sre-aiops
+
+        annotations:
+          summary: "Kubernetes CrashLoopBackOff"
+          description: "A container in sre-practice is repeatedly crashing."

@@ -1,0 +1,21 @@
+groups:
+  - name: sre-kubernetes-image-errors
+    rules:
+
+      - alert: KubernetesImagePullBackOff
+
+        expr: |
+          kube_pod_container_status_waiting_reason{
+            namespace="sre-practice",
+            reason=~"ImagePullBackOff|ErrImagePull"
+          } > 0
+
+        for: 30s
+
+        labels:
+          severity: critical
+          team: sre-aiops
+
+        annotations:
+          summary: "Kubernetes image pull failure"
+          description: "A container in sre-practice cannot pull its configured image."

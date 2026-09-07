@@ -1,0 +1,28 @@
+groups:
+  - name: sre-availability-alerts
+    rules:
+
+      - alert: DeploymentAvailabilitySLOBreach
+
+        expr: |
+          (
+            kube_deployment_status_replicas_available{
+              namespace="sre-practice",
+              deployment="sre-demo"
+            }
+            /
+            kube_deployment_spec_replicas{
+              namespace="sre-practice",
+              deployment="sre-demo"
+            }
+          ) < 0.99
+
+        for: 2m
+
+        labels:
+          severity: critical
+          team: sre-aiops
+
+        annotations:
+          summary: "Deployment availability below 99 percent"
+          description: "Available replicas are below the practice availability objective."
